@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
-        "module": "system",
+        "module": "commonJS",
         "target": "es5",
         "noImplicitAny": false,
         "sourceMap": false,
-        "outFile": "script.js"
+        "experimentalDecorators": true
     }
 }

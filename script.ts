@@ -1,3 +1,5 @@
+// Generic classes
+
 class genericClass<T> {
   private val: T;
   setVal(val: T) {
@@ -41,9 +43,11 @@ function standardizeElements(array: Array<any>): Array<HTMLElement> {
   return array;
 }
 
-console.log(elementsArray);
+//console.log(elementsArray);
 
 const standartizedElems = standardizeElements(elementsArray);
+
+// Classes
 
 function applyMixins(derivedClass: any, baseClasses: any[]) {
   baseClasses.forEach(baseClass => {
@@ -71,11 +75,31 @@ class Mover {
   }
 }
 
-class movingElement implements Rotater, Mover {
+// Decorator function
+function animated(option) {
+  return target => {
+    console.log(target);
+    target.prototype.animated = option;
+  };
+}
+
+// this also works but compiles with warning
+function animatedAlternative(constructor: any) {
+  console.log(constructor)
+  constructor.prototype.animated = true;
+  return constructor;
+}
+
+// Using mixins with classes
+@animated(true)
+//@animatedAlternative
+class movingElement  implements Rotater, Mover {
   rotate: (elem: HTMLElement) => any;
   rotateBack: (elem: HTMLElement) => any;
   move: (elem: HTMLElement) => any;
   moveBack: (elem: HTMLElement) => any;
+  // this one is added by decorator function
+  animated: Boolean;
   
   element: HTMLElement;
 
@@ -93,10 +117,14 @@ class movingElement implements Rotater, Mover {
       this.rotateBack(elem);
     }
     this.element = elem;
+
+    if (this.animated) {
+      elem.style.transition = "transform .5s ease";
+    }
   }
 }
 
-applyMixins(movingElement, [Rotater, Mover]);
+applyMixins(movingElement, [Mover, Rotater]);
 
 for (let elem of standartizedElems) {
   elem.style.width = "60px"
