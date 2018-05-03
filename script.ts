@@ -78,14 +78,13 @@ class Mover {
 // Decorator function
 function animated(option) {
   return target => {
-    console.log(target);
     target.prototype.animated = option;
   };
 }
 
 // this also works but compiles with warning
 function animatedAlternative(constructor: any) {
-  console.log(constructor)
+  //console.log(constructor)
   constructor.prototype.animated = true;
   return constructor;
 }
@@ -126,13 +125,27 @@ class movingElement  implements Rotater, Mover {
 
 applyMixins(movingElement, [Mover, Rotater]);
 
+function getAvatar_Promise(elem: HTMLElement): void {
+  fetch('https://uinames.com/api/')
+    .then(res => res.json(),
+          e => { console.log(e); }
+  )
+    .then(res => {
+      const avatar = `https://robohash.org/set_set3/${res.name}?size=60x60`;
+      elem.style.background = `url(${avatar})`;
+      document.body.appendChild(elem);
+    })
+    .catch(e => {
+      console.log(`an error occurred: ${e}`);
+      document.querySelector('h3').innerText = e.toString();
+    });
+}
+
 for (let elem of standartizedElems) {
   elem.style.width = "60px"
   elem.style.height = "60px"
-  elem.style.backgroundColor = "green";
+  //elem.style.backgroundColor = "green";
   elem.style.margin = "5px";
   let elemClass = new movingElement(elem);
-  document.body.appendChild(elemClass.element);
+  getAvatar_Promise(elemClass.element);
 }
-
-
