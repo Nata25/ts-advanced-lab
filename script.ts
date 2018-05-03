@@ -125,27 +125,24 @@ class movingElement  implements Rotater, Mover {
 
 applyMixins(movingElement, [Mover, Rotater]);
 
-function getAvatar_Promise(elem: HTMLElement): void {
-  fetch('https://uinames.com/api/')
-    .then(res => res.json(),
-          e => { console.log(e); }
-  )
-    .then(res => {
-      const avatar = `https://robohash.org/set_set3/${res.name}?size=60x60`;
-      elem.style.background = `url(${avatar})`;
-      document.body.appendChild(elem);
-    })
-    .catch(e => {
+async function getAvatar_AsyncAwait(elem: HTMLElement) {
+  try {
+    const res = await fetch('https://uinames.com/api/');
+    const resToJSON = await res.json();
+    const avatar = `https://robohash.org/set_set3/${resToJSON.name}?size=60x60`;
+    elem.style.background = `url(${avatar})`;
+    document.body.appendChild(elem);
+  } catch(e) {
       console.log(`an error occurred: ${e}`);
       document.querySelector('h3').innerText = e.toString();
-    });
+    };
 }
 
 for (let elem of standartizedElems) {
   elem.style.width = "60px"
   elem.style.height = "60px"
-  //elem.style.backgroundColor = "green";
+  elem.style.backgroundColor = "green";
   elem.style.margin = "5px";
   let elemClass = new movingElement(elem);
-  getAvatar_Promise(elemClass.element);
+  getAvatar_AsyncAwait(elemClass.element);
 }
